@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bank Check Processing</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    input[type="file"] {
+      padding: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    #checkInfo {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Bank Check Processing System</h1>
+
+  <form id="uploadForm">
+    <label for="checkImage">Upload Check Image:</label>
+    <input type="file" id="checkImage" name="checkImage" accept="image/*" required />
+    <button type="submit">Upload Check</button>
+  </form>
+
+  <div id="checkInfo">
+    <h3>Extracted Information</h3>
+    <p><strong>Amount:</strong> <span id="amount">N/A</span></p>
+    <p><strong>Date:</strong> <span id="date">N/A</span></p>
+    <p><strong>Check Number:</strong> <span id="checkNumber">N/A</span></p>
+  </div>
+
+  <script>
+    document.getElementById('uploadForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const formData = new FormData();
+      const checkImage = document.getElementById('checkImage').files[0];
+      formData.append('checkImage', checkImage);
+
+      fetch('/upload', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Display extracted information
+        document.getElementById('amount').textContent = data.amount;
+        document.getElementById('date').textContent = data.date;
+        document.getElementById('checkNumber').textContent = data.checkNumber;
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Error processing the check image');
+      });
+    });
+  </script>
+
+</body>
+</html>
